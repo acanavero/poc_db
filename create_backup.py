@@ -1,6 +1,6 @@
 from google.oauth2 import service_account
-from fastavro import writer, parse_schema
-from utils import employees_schema, execute_query, CREDENTIALS_PATH, PROJECT_ID
+from fastavro import writer
+from utils import CREDENTIALS_PATH, PROJECT_ID
 import pandas as pd
 from datetime import date
 credentials = service_account.Credentials.from_service_account_file(CREDENTIALS_PATH)
