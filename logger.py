@@ -1,17 +1,14 @@
-import logging
+import json 
+from datetime import datetime
 
-Logger = logging.getLogger('poc_database.log')
-
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.INFO)
-
-file_handler = logging.FileHandler(filename='poc_database.log')
-file_handler.setLevel(logging.INFO)
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-stream_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
-
-Logger.addHandler(stream_handler)
-Logger.addHandler(file_handler)
+def log(msg,code,data):
+    try:
+        with open(f'./logs/log{datetime.now().day}-{datetime.now().month}-{datetime.now().year}.txt', "a") as f:
+            f.write(f"{str(datetime.now())}\n")
+            f.write(f"{str(msg)} - {str(code)}\n")
+            f.write(f"{str(data)}\n")
+            f.close()
+    except:
+        with open(f'./logs/error{datetime.now().day}-{datetime.now().month}-{datetime.now().year}.txt', "a") as f:  
+            f.write("the was an error logging unsuccessful transaction")
+            f.close()
