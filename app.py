@@ -4,6 +4,7 @@ from utils import PROJECT_ID, CREDENTIALS_PATH, TABLE_ID_EMPLOYEES, TABLE_ID_DEP
 from bq_connector import generate_bq_table_schema
 from data_validation import validate_columns, verify_null, parse_all_types
 from google.oauth2 import service_account
+from logger import log
 import json
 
 
@@ -19,8 +20,6 @@ def employees_hired_quarters():
 def insert_all_data():
     """returs body msg if data could not be inserted by conditions"""
     
-    body_msg = {}
-    
     credentials = service_account.Credentials.from_service_account_file(CREDENTIALS_PATH)
 
     data = request.get_json()
@@ -30,32 +29,35 @@ def insert_all_data():
     h_emp_df = pd.DataFrame.from_records(data["hired_employees"])
     dep_df = pd.DataFrame.from_records(data["departments"])
     jobs_df = pd.DataFrame.from_records(data["jobs"])
+    
 
-    a =  validate_columns(h_emp_df,dep_df,jobs_df) 
+    msg, code =  validate_columns(h_emp_df,dep_df,jobs_df) 
+    
+    if code != 200:
+        log(msg,code,data)
+        return msg,code
 
     if not verify_null(h_emp_df,dep_df,jobs_df): #if it doesn't have any null values
 
-        body_msg = parse_all_types(h_emp_df, dep_df, jobs_df)
+        h_emp_df,dep_df,jobs_df, msg, code = parse_all_types(h_emp_df, dep_df, jobs_df)
         
-        print(h_emp_df.shape)
-        
-        if body_msg == True:
-            print("Trying to Upload to bigquery")
+        if code == 200:
             emp_schema = generate_bq_table_schema(TABLE_ID_EMPLOYEES)
+            print(emp_schema)
             h_emp_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_EMPLOYEES, progress_bar= True, credentials=credentials, if_exists='append', table_schema= emp_schema)
             job_schema =  generate_bq_table_schema(TABLE_ID_JOBS)
             jobs_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_JOBS, progress_bar= True, credentials=credentials, if_exists='append', table_schema= job_schema)
             dep_schema = generate_bq_table_schema(TABLE_ID_DEPARTMENTS)
-            dep_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_JOBS, progress_bar= True, credentials=credentials, if_exists='append', table_schema= dep_schema)
+            dep_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_DEPARTMENTS, progress_bar= True, credentials=credentials, if_exists='append', table_schema= dep_schema)
         else:
-            return body_msg          
-    else:    
-        return body_msg
+            log(msg,code,data)
+            return msg,code  
+    else: 
+        msg,code = {"error": "Your data has null values and cannot be inserted"},400
+        log(msg,code,data)
+        return msg,code
 
     return {"message":"Employees inserted."},200
-    
-
-   
     
 
 if __name__ == "__main__":
