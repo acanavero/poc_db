@@ -29,8 +29,24 @@ def employees_hired_quarters():
         log({"error": "Internal server error"}, 400, {"error": e})
         return {"error": "Internal server error"}, 400
         
+@app.get("/api/departments_hired_higher_than_mean")    
+def departments_hired_higher_than_mean():
+    """List of ids, name and number of employees hired of each department that hired more employees
+    than the mean of employees hired in 2021 for all the departments, ordered by num of employees hired"""
+    try:
+        credentials = service_account.Credentials.from_service_account_file(CREDENTIALS_PATH)
+        
+        query = "SELECT * from hallowed-valve-370617.db_employees.vw_departments_hired_more_than_mean"
+
+        df =  pd.read_gbq(query, project_id=PROJECT_ID, credentials=credentials)
+        
+        df_json_dict = df.to_json(orient='records')
+        return df_json_dict, 200
     
-    
+    except Exception as e:
+        print(e)
+        log({"error": "Internal server error"}, 400, {"error": e})
+        return {"error": "Internal server error"}, 400    
     
 @app.post("/api/insert/all_data")
 def insert_all_data():
