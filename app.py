@@ -1,6 +1,7 @@
 from flask import Flask, request
 import pandas as pd
 from utils import PROJECT_ID, CREDENTIALS_PATH, TABLE_ID_EMPLOYEES, TABLE_ID_DEPARTMENTS, TABLE_ID_JOBS
+from utils import hired_employees_schema, departments_schema, jobs_schema
 from bq_connector import generate_bq_table_schema
 from data_validation import validate_columns, verify_null, parse_all_types
 from google.oauth2 import service_account
@@ -55,13 +56,9 @@ def insert_all_data():
         h_emp_df,dep_df,jobs_df, msg, code = parse_all_types(h_emp_df, dep_df, jobs_df)
         
         if code == 200:
-            emp_schema = generate_bq_table_schema(TABLE_ID_EMPLOYEES)
-            print(emp_schema)
-            h_emp_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_EMPLOYEES, progress_bar= True, credentials=credentials, if_exists='append', table_schema= emp_schema)
-            job_schema =  generate_bq_table_schema(TABLE_ID_JOBS)
-            jobs_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_JOBS, progress_bar= True, credentials=credentials, if_exists='append', table_schema= job_schema)
-            dep_schema = generate_bq_table_schema(TABLE_ID_DEPARTMENTS)
-            dep_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_DEPARTMENTS, progress_bar= True, credentials=credentials, if_exists='append', table_schema= dep_schema)
+            h_emp_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_EMPLOYEES, progress_bar= True, credentials=credentials, if_exists='append', table_schema= hired_employees_schema)
+            jobs_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_JOBS, progress_bar= True, credentials=credentials, if_exists='append', table_schema= jobs_schema)
+            dep_df.to_gbq(project_id=PROJECT_ID, destination_table=TABLE_ID_DEPARTMENTS, progress_bar= True, credentials=credentials, if_exists='append', table_schema= departments_schema)
         else:
             log(msg,code,data)
             return msg,code  
