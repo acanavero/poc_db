@@ -1,4 +1,3 @@
-import json 
 from datetime import datetime
 
 def log(msg,code,data):
@@ -10,5 +9,5 @@ def log(msg,code,data):
             f.close()
     except:
         with open(f'./logs/error{datetime.now().day}-{datetime.now().month}-{datetime.now().year}.txt', "a") as f:  
-            f.write("the was an error logging unsuccessful transaction")
+            f.write("there was an error logging unsuccessful transaction")
             f.close()
