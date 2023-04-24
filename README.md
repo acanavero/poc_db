@@ -1,4 +1,4 @@
-                                          Proof of concept cloud database using BigQuery and AWS EC2.
+Proof of concept cloud database using BigQuery and AWS EC2.
 
 The module "create_tables_bq.py" converts the CSV files into dataframes to upload them into BigQuery.
 The table schemas are defined in the module "utils.py" which indicates that all fields are required.
