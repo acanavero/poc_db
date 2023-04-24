@@ -17,8 +17,11 @@ To run in local environment:
 Install python 3.8.10. 
 
 pip install flask
+
 pip install pandas
+
 pip install fastavro
+
 pip install --upgrade google-cloud-bigquery
 
 run python3 app.py 
