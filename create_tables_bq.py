@@ -15,11 +15,11 @@ if __name__ == '__main__':
 
         credentials = service_account.Credentials.from_service_account_file(CREDENTIALS_PATH)
 
-        hired_employees =  pd.read_csv('./initial_data/hired_employees.csv')
+        hired_employees =  pd.read_csv('./initial_data/hired_employees.csv', header= None)
 
-        jobs = pd.read_csv('./initial_data/jobs.csv', dtype={"id":'int32', "job": "string"})
+        jobs = pd.read_csv('./initial_data/jobs.csv', dtype={"id":'int32', "job": "string"}, header = None)
 
-        departments = pd.read_csv('./initial_data/departments.csv', dtype={"id":'int32', "department": "string"})
+        departments = pd.read_csv('./initial_data/departments.csv', dtype={"id":'int32', "department": "string"}, header = None)
 
         hired_employees.columns = ['id','name','datetime', 'department_id', 'job_id']
         hired_employees['name'] = hired_employees['name'].astype('str')
