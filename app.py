@@ -13,6 +13,8 @@ app = Flask(__name__)
 
 @app.get("/api/employees_hired_2021")
 def employees_hired_quarters():
+    """Number of employees hired for each job and department in 2021 divided by quarter,
+    ordered by department and job."""
     try:
         credentials = service_account.Credentials.from_service_account_file(CREDENTIALS_PATH)
         
