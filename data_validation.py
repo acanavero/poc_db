@@ -64,5 +64,6 @@ def parse_all_types(emp,dep,job):
         print(dep.info())
     
         return emp,dep,job,{"message": "Datatypes parsed succesfully"}, 200
-    except:
-        return emp,dep,job,{"error": "There was a problem while casting the datatypes. Please check if your data has the required structure."}
+    except Exception as e:
+        print(e)
+        return emp,dep,job,{"error": e}, 400
