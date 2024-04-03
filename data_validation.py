@@ -26,7 +26,7 @@ def verify_null(h,d,j):
     return True
 
 def parse_all_types(emp,dep,job):
-    """Receives 3 dataframes and cast all the columns into the correct tipe. 
+    """Receives 3 dataframes and cast all the columns into the correct type. 
     Also verifies if all the datetime values are valid and. 
     Also verifies if any df has more then 1000 rows. 
     Returns body msg and a code"""
